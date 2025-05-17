@@ -1,4 +1,4 @@
 {
   "base_url": "https://store.steampowered.com/",
-  "timeout": 45
+  "timeout": 10
 }

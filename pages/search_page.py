@@ -10,9 +10,9 @@ class SearchPage(BasePage):
     PAGE_CHECK = (By.ID, "search_result_container")
     SORT_BY = (By.ID, "sort_by_trigger")
     FILTER_BY = (By.ID, "Price_DESC")
-    SEARCH_RESULT = (By.XPATH, "//*[@class='discount_final_price']")
+    SEARCH_RESULT = (By.XPATH, "//*[contains(@class,'discount_final_price')]")
 
-    def load_page(self):
+    def is_page_loaded(self):
         try:
             self.wait.until(EC.visibility_of_element_located(self.PAGE_CHECK))
             return True
@@ -24,17 +24,19 @@ class SearchPage(BasePage):
         sort_by.click()
 
     def filter_by_trigger(self):
-        filter_by = self.wait.until(EC.element_to_be_clickable(self.FILTER_BY))
+        old_url = self.driver.current_url
+        filter_by = self.wait.until(EC.visibility_of_element_located(self.FILTER_BY))
         filter_by.click()
+        self.wait_for_url_change(old_url)
 
-    def sort_display(self):
+    def is_display_sorted(self):
         try:
             self.wait.until(EC.visibility_of_all_elements_located(self.SEARCH_RESULT))
             return True
         except TimeoutException:
             return False
 
-    def sort_n_position(self, n):
+    def sort_by_n_position(self, n):
         elements = self.wait.until(EC.visibility_of_all_elements_located(self.SEARCH_RESULT))
         return elements[:n]
 
@@ -49,12 +51,3 @@ class SearchPage(BasePage):
                 prices.append(price_value)
 
         return prices
-
-    def is_sorted_desc(self, prices):
-        sorted_prices = sorted(prices, reverse=True)
-        if prices != sorted_prices:
-            print("Prices not sorted!")
-            print("Actual: ", prices)
-            print("Expected:", sorted_prices)
-            return False
-        return True

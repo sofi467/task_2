@@ -16,17 +16,13 @@ class TestSearhGame:
         driver = driver_with_url
         main_page = MainPages(driver, config_reader)
         search_page = SearchPage(driver, config_reader)
-        assert main_page.check_is_visibility_page(), "page is not loaded"
-        main_page.search_game(game)
-        assert search_page.load_page(), "page not loaded"
+        assert main_page.is_page_visibility(), "page is not loaded"
+        main_page.search_for_a_game(game)
+        assert search_page.is_page_loaded(), "page not loaded"
         search_page.sort_by_price()
-
         search_page.filter_by_trigger()
-        time.sleep(5)
-
-        assert search_page.sort_display(), "sorting not displayed"
-        elements = search_page.sort_n_position(n)
+        assert search_page.is_display_sorted(), "sorting not displayed"
+        elements = search_page.sort_by_n_position(n)
         prices = search_page.get_prices_from_elements(elements)
-
+        assert prices == sorted(prices, reverse=True), f"Цены не отсортированы по убыванию: {prices}"
         assert len(prices) == n, f"Получено {len(prices)} цен, ожидалось {n}"
-        assert search_page.is_sorted_desc(prices), f"Цены не отсортированы по убыванию: {prices}"
