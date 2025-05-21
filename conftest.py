@@ -21,10 +21,8 @@ def driver():
 @pytest.fixture(params=["ru", "en"])
 def driver_with_url(driver, config_reader, request):
     language = request.param
-    base_url = config_reader.get_value('base_url')
-    url_with_lang = f"{base_url}?l={language}" if language else base_url
     options = Options()
     options.add_argument(f'--lang={language}')
     driver = webdriver.Chrome(options=options)
-    driver.get(url_with_lang)
+    driver.get(config_reader.get_value('base_url'))
     return driver

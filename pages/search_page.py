@@ -7,31 +7,30 @@ import re
 
 
 class SearchPage(BasePage):
-    PAGE_CHECK = (By.ID, "search_result_container")
+    CHECK_PAGE = (By.ID, "search_result_container")
     SORT_BY = (By.ID, "sort_by_trigger")
     FILTER_BY = (By.ID, "Price_DESC")
+    LOAD_RESULT = (By.XPATH, "//*[contains(@id, 'search_result_container') and contains(@style, 'opacity')]")
     SEARCH_RESULT = (By.XPATH, "//*[contains(@class,'discount_final_price')]")
 
-    def is_page_loaded(self):
-        try:
-            self.wait.until(EC.visibility_of_element_located(self.PAGE_CHECK))
-            return True
-        except TimeoutException:
-            return False
+    # def is_page_loaded(self):
+    #     try:
+    #         self.wait.until(EC.visibility_of_element_located(self.PAGE_CHECK))
+    #         return True
+    #     except TimeoutException:
+    #         return False
 
     def sort_by_price(self):
         sort_by = self.wait.until(EC.element_to_be_clickable(self.SORT_BY))
         sort_by.click()
 
     def filter_by_trigger(self):
-        old_url = self.driver.current_url
         filter_by = self.wait.until(EC.visibility_of_element_located(self.FILTER_BY))
         filter_by.click()
-        self.wait_for_url_change(old_url)
 
     def is_display_sorted(self):
         try:
-            self.wait.until(EC.visibility_of_all_elements_located(self.SEARCH_RESULT))
+            self.wait.until(EC.invisibility_of_element_located(self.LOAD_RESULT))
             return True
         except TimeoutException:
             return False

@@ -16,9 +16,9 @@ class TestSearhGame:
         driver = driver_with_url
         main_page = MainPages(driver, config_reader)
         search_page = SearchPage(driver, config_reader)
-        assert main_page.is_page_visibility(), "page is not loaded"
+        assert main_page.is_load_page(), "page is not loaded"
         main_page.search_for_a_game(game)
-        assert search_page.is_page_loaded(), "page not loaded"
+        assert search_page.is_load_page(), "page not loaded"
         search_page.sort_by_price()
         search_page.filter_by_trigger()
         assert search_page.is_display_sorted(), "sorting not displayed"

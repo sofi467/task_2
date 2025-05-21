@@ -1,3 +1,4 @@
+from selenium.common import TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait as Wait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -10,5 +11,9 @@ class BasePage:
         self.timeout = config_reader.get_value('timeout')
         self.wait = Wait(driver, self.timeout)
 
-    def wait_for_url_change(self, old_url):
-        self.wait.until(EC.url_changes(old_url))
+    def is_load_page(self):
+        try:
+            self.wait.until(EC.visibility_of_element_located(self.CHECK_PAGE))
+            return True
+        except TimeoutException:
+            return False
